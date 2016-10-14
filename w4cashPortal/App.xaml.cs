@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Deployment.Application;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,9 @@ namespace w4cashPortal
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            ClickOnceHelper.CleanUpLocalDeploymentVersions();
+
+
             // check last version
             string lastVersion = ConfigurationHelper.ReadSetting("LastStartUpVersion");
             Assembly currentEntyAssembly = Assembly.GetEntryAssembly();
