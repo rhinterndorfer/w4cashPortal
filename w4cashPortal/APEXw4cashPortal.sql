@@ -27,7 +27,7 @@ prompt APPLICATION 102 - w4cash Portal
 -- Application Export:
 --   Application:     102
 --   Name:            w4cash Portal
---   Date and Time:   17:43 Wednesday November 16, 2016
+--   Date and Time:   13:23 Thursday November 17, 2016
 --   Exported By:     ADMIN
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -37,10 +37,10 @@ prompt APPLICATION 102 - w4cash Portal
 
 -- Application Statistics:
 --   Pages:                      8
---     Items:                   15
+--     Items:                   16
 --     Validations:              3
 --     Processes:               12
---     Regions:                 13
+--     Regions:                 14
 --     Buttons:                 18
 --   Shared Components:
 --     Logic:
@@ -91,7 +91,7 @@ wwv_flow_api.create_flow(
 ,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'F102')
 ,p_page_view_logging=>'YES'
 ,p_page_protection_enabled_y_n=>'Y'
-,p_checksum_salt_last_reset=>'20161116173808'
+,p_checksum_salt_last_reset=>'20161117132327'
 ,p_bookmark_checksum_function=>'MD5'
 ,p_max_session_length_sec=>28800
 ,p_compatibility_mode=>'5.0'
@@ -122,7 +122,7 @@ wwv_flow_api.create_flow(
 ,p_csv_encoding=>'Y'
 ,p_auto_time_zone=>'Y'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20161116173808'
+,p_last_upd_yyyymmddhh24miss=>'20161117132327'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_ui_type_name => null
 );
@@ -13613,7 +13613,42 @@ wwv_flow_api.create_page(
 ,p_cache_mode=>'NOCACHE'
 ,p_help_text=>'No help is available for this page.'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20161012142329'
+,p_last_upd_yyyymmddhh24miss=>'20161117132327'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(1977106350487211)
+,p_plug_name=>'Historie'
+,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(7661345105783421)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(1977451854487214)
+,p_name=>'P999_VERSION'
+,p_item_sequence=>10
+,p_item_plug_id=>wwv_flow_api.id(1977106350487211)
+,p_prompt=>'Version'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'17.11.2016:',
+'- Preiszonen: Kunden Rabatt (in Prozent)'))
+,p_source_type=>'STATIC'
+,p_display_as=>'NATIVE_TEXTAREA'
+,p_cSize=>30
+,p_cHeight=>5
+,p_grid_column=>1
+,p_grid_label_column_span=>0
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(7681879446783436)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'Y'
+,p_attribute_02=>'Y'
+,p_attribute_03=>'N'
+,p_attribute_04=>'BOTH'
 );
 end;
 /
