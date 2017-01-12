@@ -55,7 +55,7 @@ namespace w4cashPortal
                 else
                 {
                     syspassword = System.Text.UnicodeEncoding.UTF8.GetString(Convert.FromBase64String(syspassword));
-                    startInfo.Arguments = "system/" + syspassword + " as sysdba @upgrade.sql";
+                    startInfo.Arguments = "system/" + syspassword + " @upgrade.sql";
                 }
                 startInfo.UseShellExecute = false;
                 startInfo.EnvironmentVariables.Add("NLS_LANG", "AMERICAN_AMERICA.UTF8");
