@@ -43,7 +43,20 @@ namespace w4cashPortal
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.WorkingDirectory = Path.GetDirectoryName(currentEntyAssembly.Location);
                 startInfo.FileName = "sqlplus";
-                startInfo.Arguments = "/ as sysdba @upgrade.sql";
+                
+                string syspassword = ConfigurationHelper.ReadSetting("PortalDBSYSPassword");
+                if (syspassword == null)
+                    ConfigurationHelper.WriteSetting("PortalDBSYSPassword", "");
+
+                if (String.IsNullOrEmpty(syspassword))
+                { 
+                    startInfo.Arguments = "/ as sysdba @upgrade.sql";
+                }
+                else
+                {
+                    syspassword = System.Text.UnicodeEncoding.UTF8.GetString(Convert.FromBase64String(syspassword));
+                    startInfo.Arguments = "system/" + syspassword + " as sysdba @upgrade.sql";
+                }
                 startInfo.UseShellExecute = false;
                 startInfo.EnvironmentVariables.Add("NLS_LANG", "AMERICAN_AMERICA.UTF8");
 
