@@ -31,12 +31,19 @@ namespace w4cashPortal
             
             if(!currentVersion.Equals(lastVersion))
             {
-                // run update
-                if(!WindowsHelper.IsAdministrator())
-                { 
-                    WindowsHelper.RunAsAdministrator();
-                    Application.Current.Shutdown();
-                    return;
+                string syspassword = ConfigurationHelper.ReadSetting("PortalDBSYSPassword");
+                if (syspassword == null)
+                    ConfigurationHelper.WriteSetting("PortalDBSYSPassword", "");
+
+                if (String.IsNullOrEmpty(syspassword))
+                {
+                    // run update as local administrator
+                    if (!WindowsHelper.IsAdministrator())
+                    {
+                        WindowsHelper.RunAsAdministrator();
+                        Application.Current.Shutdown();
+                        return;
+                    }
                 }
 
                 // run sqlplus as sysdba
@@ -44,9 +51,6 @@ namespace w4cashPortal
                 startInfo.WorkingDirectory = Path.GetDirectoryName(currentEntyAssembly.Location);
                 startInfo.FileName = "sqlplus";
                 
-                string syspassword = ConfigurationHelper.ReadSetting("PortalDBSYSPassword");
-                if (syspassword == null)
-                    ConfigurationHelper.WriteSetting("PortalDBSYSPassword", "");
 
                 if (String.IsNullOrEmpty(syspassword))
                 { 
