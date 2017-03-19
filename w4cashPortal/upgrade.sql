@@ -1,5 +1,5 @@
-﻿set serveroutput on 
-WHENEVER SQLERROR EXIT SQL.SQLCODE 
+﻿set serveroutput on; 
+WHENEVER SQLERROR EXIT SQL.SQLCODE;
 declare 
 l_workspace_id number; 
 -- command line configuration  
