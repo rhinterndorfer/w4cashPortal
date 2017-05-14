@@ -27,7 +27,7 @@ prompt APPLICATION 102 - w4cash Portal
 -- Application Export:
 --   Application:     102
 --   Name:            w4cash Portal
---   Date and Time:   21:19 Sunday March 19, 2017
+--   Date and Time:   21:33 Sunday May 14, 2017
 --   Exported By:     ADMIN
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -93,7 +93,7 @@ wwv_flow_api.create_flow(
 ,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'F102')
 ,p_page_view_logging=>'YES'
 ,p_page_protection_enabled_y_n=>'Y'
-,p_checksum_salt_last_reset=>'20170319211711'
+,p_checksum_salt_last_reset=>'20170514205006'
 ,p_bookmark_checksum_function=>'MD5'
 ,p_max_session_length_sec=>28800
 ,p_compatibility_mode=>'5.0'
@@ -124,7 +124,7 @@ wwv_flow_api.create_flow(
 ,p_csv_encoding=>'Y'
 ,p_auto_time_zone=>'Y'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20170319211711'
+,p_last_upd_yyyymmddhh24miss=>'20170514205006'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_ui_type_name => null
 );
@@ -251,6 +251,17 @@ wwv_flow_api.create_list_item(
 ,p_parent_list_item_id=>wwv_flow_api.id(10801807192771973)
 ,p_list_item_current_type=>'COLON_DELIMITED_PAGE_LIST'
 ,p_list_item_current_for_pages=>'5'
+);
+wwv_flow_api.create_list_item(
+ p_id=>wwv_flow_api.id(2488141458191227)
+,p_list_item_display_sequence=>9040
+,p_list_item_link_text=>'Intern'
+,p_list_item_link_target=>'/apex/f?p=103'
+,p_list_item_disp_cond_type=>'EXISTS'
+,p_list_item_disp_condition=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select *',
+'from resources where name like ''Custom.Settings'' and XMLTYPE(UTL_RAW.cast_to_varchar2(content)).EXTRACT(''configuration/portalinternlink/text()'').getStringVal() = ''true'''))
+,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_api.create_list(
  p_id=>wwv_flow_api.id(10797272672714630)
