@@ -2128,7 +2128,9 @@ IS
     <sheets>
       <sheet name="#SHEETNAME#" sheetId="1" r:id="rId1"/>
     </sheets>
-    <definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">#SHEETNAME#!$A$1:$H$1</definedName></definedNames>
+    <definedNames>
+	  <definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">#SHEETNAME#!$A$1:$H$1</definedName>
+    </definedNames>
     <calcPr calcId="125725"/>
     <fileRecoveryPr repairLoad="1"/>
   </workbook>';
@@ -2189,7 +2191,17 @@ IS
       <family val="2" />
       <scheme val="minor" />
     </font>';
-  FONTS_CNT constant  binary_integer := 2;   
+	
+  TITLE_FONT constant varchar2(200) := '
+   <font>
+      <b />
+      <sz val="20" />
+      <color theme="1" />
+      <name val="Calibri" />
+      <family val="2" />
+      <scheme val="minor" />
+    </font>';
+  FONTS_CNT constant  binary_integer := 3;   
   
   
   DEFAULT_FILL constant varchar2(200) :=  '
@@ -2211,6 +2223,11 @@ IS
      
   HEADER_STYLE constant varchar2(200) := '     
       <xf numFmtId="0" borderId="0" #FILL# fontId="1" xfId="0" applyAlignment="1" applyFont="1" >
+         <alignment wrapText="0" horizontal="#ALIGN#"/>
+     </xf>';  
+  
+  TITLE_STYLE constant varchar2(200) := '     
+      <xf numFmtId="0" borderId="0" #FILL# fontId="2" xfId="0" applyAlignment="1" applyFont="1" >
          <alignment wrapText="0" horizontal="#ALIGN#"/>
      </xf>';  
   
@@ -2352,6 +2369,7 @@ IS
     return to_clob('<fonts count="'||(a_font.count + FONTS_CNT)||'" x14ac:knownFonts="1">'||
                    DEFAULT_FONT||chr(10)||
                    BOLD_FONT||chr(10)||
+				   TITLE_FONT||chr(10)||
                    v_fonts_xml||chr(10)||
                    '</fonts>'||chr(10));
   end get_font_colors_xml;  
@@ -2514,7 +2532,37 @@ IS
       return a_styles.count  - 1 + DEFAULT_STYLES_CNT;
     end if;  
   
-  end get_header_style_id;    
+  end get_header_style_id;  
+------------------------------------------------------------------------------
+  function get_title_style_id(p_back        in t_color default BACK_COLOR,
+                               p_align       in varchar2,
+                               p_border      in boolean default false)
+  return binary_integer
+  is
+    v_style             t_style_string;
+    v_style_xml         t_large_varchar2;
+    v_num_fmt_id        binary_integer;
+    v_back_color_id     binary_integer;
+  begin
+    v_style := '      '||nvl(p_back,'       ')||'CHARTITLE'||p_align;
+    --   
+    if a_styles.exists(v_style) then
+      return a_styles(v_style)  - 1 + DEFAULT_STYLES_CNT;
+    else
+      a_styles(v_style) := a_styles.count + 1;
+  
+      if p_back is not null then
+        v_back_color_id := add_back_color(p_back);
+        v_style_xml := replace(TITLE_STYLE,'#FILL#',' fillId="'||v_back_color_id||'"  applyFill="1" ' );
+      else
+        v_style_xml := replace(TITLE_STYLE,'#FILL#',' fillId="0" '); --default fill 
+      end if;      
+      v_style_xml  := replace(v_style_xml,'#ALIGN#',lower(p_align))||chr(10);
+      v_styles_xml := v_styles_xml||v_style_xml;      
+      return a_styles.count  - 1 + DEFAULT_STYLES_CNT;
+    end if;  
+  
+  end get_title_style_id;   
   ------------------------------------------------------------------------------
   
   function  get_styles_xml
@@ -2757,8 +2805,9 @@ IS
                           p_string    => p_title,
                           p_clob      => v_clob,
                           p_buffer    => v_buffer,
-                          p_style_id  => null
+                          p_style_id  => get_title_style_id(p_align  => 'left')
                          );
+		add(v_clob,v_buffer,'<c r="B1"/><c r="C1"/>'||chr(10));     
 		add(v_clob,v_buffer,'</row>'||chr(10));     
 		v_rownum := v_rownum + 1;
 		
@@ -2904,10 +2953,15 @@ IS
 		add(v_clob,v_buffer,'<autoFilter ref="A1:' || get_cell_name(v_colls_count,v_rownum) || '"/>');
 	 end if;
      
+	 -- merge title cells
+	 if p_title is not null then
+		add(v_clob,v_buffer,'<mergeCells count="1"><mergeCell ref="A1:' || get_cell_name(v_colls_count,1) || '"/></mergeCells>');
+	 end if;
 	 
-     add(v_clob,v_buffer,'<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>'||chr(10),TRUE);
+     add(v_clob,v_buffer,'<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>'||chr(10),TRUE);
+	 add(v_clob,v_buffer,'</worksheet>'||chr(10),TRUE);
      
-     add(v_strings_clob,v_string_buffer,'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'||chr(10));
+	 add(v_strings_clob,v_string_buffer,'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'||chr(10));
      add(v_strings_clob,v_string_buffer,'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' || v_strings.count() || '" uniqueCount="' || v_strings.count() || '">'||chr(10));
         
      for i in 1 .. v_strings.count() loop
