@@ -1,4 +1,5 @@
-﻿set serveroutput on; 
+set serveroutput on; 
+GRANT EXECUTE ON SYS.UTL_FILE TO W4CASH;
 WHENEVER SQLERROR EXIT SQL.SQLCODE;
 declare 
 l_workspace_id number; 
@@ -20,5 +21,9 @@ begin
 end; 
 / 
 @APEXw4cashPortal.sql 
+
+ALTER SESSION SET CURRENT_SCHEMA = W4CASH;
+
+@install_ir_2_excel.sql
 /
 exit;

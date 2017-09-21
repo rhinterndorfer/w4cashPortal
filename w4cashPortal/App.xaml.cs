@@ -20,8 +20,6 @@ namespace w4cashPortal
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            ClickOnceHelper.CleanUpLocalDeploymentVersions();
-
 
             // check last version
             string lastVersion = ConfigurationHelper.ReadSetting("LastStartUpVersion");
