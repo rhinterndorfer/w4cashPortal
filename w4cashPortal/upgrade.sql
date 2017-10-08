@@ -25,5 +25,7 @@ end;
 ALTER SESSION SET CURRENT_SCHEMA = W4CASH;
 
 @install_ir_2_excel.sql
+
+@upgrade_db.sql
 /
 exit;
