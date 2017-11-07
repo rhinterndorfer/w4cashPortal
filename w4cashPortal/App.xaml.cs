@@ -60,7 +60,9 @@ namespace w4cashPortal
                     startInfo.Arguments = "system/" + syspassword + " @upgrade.sql";
                 }
                 startInfo.UseShellExecute = false;
-                startInfo.EnvironmentVariables.Add("NLS_LANG", "AMERICAN_AMERICA.UTF8");
+
+                if (!startInfo.EnvironmentVariables.ContainsKey("NLS_LANG"))
+                    startInfo.EnvironmentVariables.Add("NLS_LANG", "AMERICAN_AMERICA.UTF8");
 
                 Process p = Process.Start(startInfo);
                 while(!p.HasExited)
