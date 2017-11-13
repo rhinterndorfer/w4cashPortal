@@ -35,7 +35,7 @@ begin
             currentPriceBuyAvg, currentUnits, currentStock
         from stockdiary sd
         where 
-            reason in (4) 
+            reason in (3,4) -- Anfangsbestand, Wareneingang
             and pricebuy is not null
             and extract(year from sd.datenew)=y
             and sd.product=p_productid
