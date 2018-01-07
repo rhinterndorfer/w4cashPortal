@@ -1,4 +1,33 @@
 -- ------------
+-- vw_productspricegross
+-- ------------
+create or replace view vw_productspricegross as
+select p.id, c.name as categoryname, reference, code, p.name, round(p.pricesell * (1+t.rate),5) pricegross, t.rate as taxrate
+from products p 
+inner join taxes t on p.taxcat=t.id
+inner join categories c on p.category=c.id;
+/
+
+-- ------------
+-- tr_vw_productspricegross
+-- ------------
+create or replace trigger tr_vw_productspricegross
+ instead of update on vw_productspricegross
+ referencing new as new
+ begin
+     update products 
+      set pricesell = :new.pricegross / (1 + :new.taxrate),
+        taxcat = (select id from taxes where rate = :new.taxrate)
+      where id = :old.id;
+     if ( sql%rowcount = 0 )
+       then
+         raise_application_error
+          ( -20001, 'Error updating the vw_productspricegross view !!!' );
+     end if;
+ end;
+ /
+
+-- ------------
 -- fnItemRating
 -- ------------
 create or replace function fnItemRating
@@ -63,3 +92,4 @@ begin
 
     return lastPriceBuyAVG;
 end;
+/
