@@ -15,7 +15,7 @@ begin
 wwv_flow_api.import_begin (
  p_version_yyyy_mm_dd=>'2020.03.31'
 ,p_release=>'20.1.0.00.13'
-,p_default_workspace_id=>2200551898417176
+,p_default_workspace_id=>6200773841559329
 ,p_default_application_id=>102
 ,p_default_id_offset=>2205840794431103
 ,p_default_owner=>'W4CASH'
@@ -28,7 +28,7 @@ prompt APPLICATION 102 - w4cash Portal
 -- Application Export:
 --   Application:     102
 --   Name:            w4cash Portal
---   Date and Time:   10:56 Sunday October 3, 2021
+--   Date and Time:   10:47 Sunday November 17, 2024
 --   Exported By:     ADMIN
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -72,7 +72,7 @@ prompt APPLICATION 102 - w4cash Portal
 --       E-Mail:
 --     Supporting Objects:  Included
 --   Version:         20.1.0.00.13
---   Instance ID:     200163104219916
+--   Instance ID:     300182591075185
 --
 
 prompt --application/delete_application
@@ -89,7 +89,7 @@ wwv_flow_api.create_flow(
 ,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'F102')
 ,p_page_view_logging=>'YES'
 ,p_page_protection_enabled_y_n=>'Y'
-,p_checksum_salt_last_reset=>'20211003105413'
+,p_checksum_salt_last_reset=>'20241117103924'
 ,p_bookmark_checksum_function=>'MD5'
 ,p_max_session_length_sec=>28800
 ,p_compatibility_mode=>'5.0'
@@ -124,8 +124,8 @@ wwv_flow_api.create_flow(
 ,p_csv_encoding=>'Y'
 ,p_auto_time_zone=>'Y'
 ,p_friendly_url=>'N'
-,p_last_updated_by=>'W4CASH'
-,p_last_upd_yyyymmddhh24miss=>'20211003105413'
+,p_last_updated_by=>'ADMIN'
+,p_last_upd_yyyymmddhh24miss=>'20241117103924'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>2
 ,p_ui_type_name => null
@@ -13859,8 +13859,8 @@ wwv_flow_api.create_page(
 ,p_group_id=>wwv_flow_api.id(89407856943837328)
 ,p_page_template_options=>'#DEFAULT#'
 ,p_help_text=>'No help is available for this page.'
-,p_last_updated_by=>'W4CASH'
-,p_last_upd_yyyymmddhh24miss=>'20211003105413'
+,p_last_updated_by=>'ADMIN'
+,p_last_upd_yyyymmddhh24miss=>'20241117103924'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(89515563314721251)
@@ -13894,7 +13894,8 @@ wwv_flow_api.create_page_plug(
 '  TO_CHAR (r.DateNew, ''D '') || SUBSTR(TO_CHAR (r.DateNew, ''DAY''),1,2) || TO_CHAR (r.DateNew, '' / HH24'') as HourDayOfWeek,',
 '  case pay.PAYMENT when ''cash'' then ''Bar'' when ''cashrefund'' then ''Bar'' when ''cashin'' then ''Einzahlung'' when ''cashout'' then ''Auszahlung'' when ''magcard'' then ''Karte'' when ''magcardrefund'' then ''Karte'' when ''free'' then ''Frei/Gratis'' when ''paperin'' then '''
 ||'Rechnung'' when ''paperout'' then ''Rechnung'' else pay.PAYMENT end ',
-'  as Payment',
+'  as Payment,',
+'  cust.searchkey customer',
 'from  ',
 'CLOSEDCASH cc ',
 'inner join  ',
@@ -13906,6 +13907,9 @@ wwv_flow_api.create_page_plug(
 'inner join ',
 '	(select * from TICKETS UNION ALL select * from BRANCH_TICKETS) t ',
 '	on r.ID=t.ID ',
+'left join',
+'    customers cust',
+'    on t.customer = cust.id',
 'inner join ',
 '	(select * from TICKETLINES UNION ALL select * from BRANCH_TICKETLINES) tl ',
 '	on t.id=tl.TICKET ',
@@ -13931,7 +13935,7 @@ wwv_flow_api.create_page_plug(
 '  (select * from PAYMENTS UNION ALL select * from BRANCH_PAYMENTS) pay',
 '  on r.ID=pay.RECEIPT ',
 'WHERE cc.HOSTSEQUENCE between :P5_FROM and :P5_TILL ',
-''))
+'order by r.DateNew'))
 ,p_plug_source_type=>'NATIVE_IR'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_prn_content_disposition=>'ATTACHMENT'
@@ -14157,6 +14161,14 @@ wwv_flow_api.create_worksheet_column(
 ,p_column_label=>'Zahlungsmittel'
 ,p_column_type=>'STRING'
 );
+wwv_flow_api.create_worksheet_column(
+ p_id=>wwv_flow_api.id(8720156971635001)
+,p_db_column_name=>'CUSTOMER'
+,p_display_order=>211
+,p_column_identifier=>'V'
+,p_column_label=>'Kunde'
+,p_column_type=>'STRING'
+);
 wwv_flow_api.create_worksheet_rpt(
  p_id=>wwv_flow_api.id(12684754372395059)
 ,p_application_user=>'APXWS_ALTERNATIVE'
@@ -14216,7 +14228,7 @@ wwv_flow_api.create_worksheet_rpt(
 ,p_status=>'PUBLIC'
 ,p_is_default=>'Y'
 ,p_display_rows=>100
-,p_report_columns=>'TIMESTAMP:LOCATION:POS:CATEGORYNAME:PRODUCT:PRODUCTNAME:FREE:TAX:UNITS:PRICEGROSS:PRICENET:PRICETAX:DAYOFWEEK:DAY:MONTH:YEAR:QUARTER:HOUR:HOURDAYOFWEEK:TICKETID:PAYMENT:'
+,p_report_columns=>'TIMESTAMP:LOCATION:POS:CATEGORYNAME:PRODUCT:PRODUCTNAME:FREE:TAX:UNITS:PRICEGROSS:PRICENET:PRICETAX:DAYOFWEEK:DAY:MONTH:YEAR:QUARTER:HOUR:HOURDAYOFWEEK:TICKETID:PAYMENT::CUSTOMER'
 );
 wwv_flow_api.create_worksheet_rpt(
  p_id=>wwv_flow_api.id(89530738562760996)
@@ -16058,7 +16070,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20180107111740'
+,p_last_upd_yyyymmddhh24miss=>'20241117103531'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(16798003862154967)
@@ -16279,10 +16291,11 @@ wwv_flow_api.create_page_item(
 ,p_source_type=>'DB_COLUMN'
 ,p_display_as=>'NATIVE_POPUP_LOV'
 ,p_lov=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'select ''''||newref||'''', ''''||newref||'''' from',
-'(select reference+1 as newref from products where REGEXP_LIKE(reference, ''^[[:digit:]]+$'')) p',
+'select to_char(newref) n, to_char(newref) v ',
+'from',
+'(select to_number(reference)+1 as newref from products where REGEXP_LIKE(reference, ''^[[:digit:]]+$'')) p',
 'left join',
-'(select reference from products where REGEXP_LIKE(reference, ''^[[:digit:]]+$'')) o',
+'(select to_number(reference) reference  from products where REGEXP_LIKE(reference, ''^[[:digit:]]+$'')) o',
 'on newref=reference',
 'where reference is null',
 'order by newref'))
@@ -16296,6 +16309,7 @@ wwv_flow_api.create_page_item(
 ,p_attribute_02=>'FIRST_ROWSET'
 ,p_attribute_03=>'N'
 ,p_attribute_04=>'Y'
+,p_attribute_05=>'N'
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(16801508322154973)
