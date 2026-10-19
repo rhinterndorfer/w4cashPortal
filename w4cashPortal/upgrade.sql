@@ -13,6 +13,7 @@ begin
 	from apex_workspaces 
 	where upper(workspace) = upper(l_workspace_name); 
 
+	apex_application_install.clear_all;
 	apex_application_install.set_workspace_id( l_workspace_id ); 
 	apex_application_install.set_application_id(l_application_id); 
 	apex_application_install.generate_offset; 
@@ -20,12 +21,15 @@ begin
 	apex_application_install.set_application_alias( 'F' || apex_application_install.get_application_id ); 
 end; 
 / 
-@APEXw4cashPortal.sql 
+@w4cashPortal/APEXw4cashPortal.sql
+commit;
 
 ALTER SESSION SET CURRENT_SCHEMA = W4CASH;
 
-@install_ir_2_excel.sql
+@w4cashPortal/install_ir_2_excel.sql
 
-@upgrade_db.sql
+@w4cashPortal/upgrade_db.sql
+
+commit;
 /
-exit;
+
