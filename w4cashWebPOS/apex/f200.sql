@@ -28,15 +28,15 @@ prompt APPLICATION 200 - w4cashWebPos
 -- Application Export:
 --   Application:     200
 --   Name:            w4cashWebPos
---   Date and Time:   19:06 Monday October 19, 2026
+--   Date and Time:   07:54 Tuesday October 20, 2026
 --   Exported By:     ADMIN
 --   Flashback:       0
 --   Export Type:     Application Export
 --     Pages:                     10
 --       Items:                   22
 --       Processes:                9
---       Regions:                 15
---       Buttons:                 16
+--       Regions:                 16
+--       Buttons:                 17
 --       Dynamic Actions:         28
 --     Shared Components:
 --       Logic:
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'w4cashWebPos'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20261019190505'
+,p_last_upd_yyyymmddhh24miss=>'20261020074148'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>863
 ,p_ui_type_name => null
@@ -12002,7 +12002,7 @@ wwv_flow_api.create_page(
 ,p_step_template=>wwv_flow_api.id(13488085754060113)
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20261004110151'
+,p_last_upd_yyyymmddhh24miss=>'20261020074148'
 );
 wwv_flow_api.create_report_region(
  p_id=>wwv_flow_api.id(13469069982808959)
@@ -12067,6 +12067,31 @@ wwv_flow_api.create_report_columns(
 ,p_use_as_row_header=>'N'
 ,p_derived_column=>'N'
 ,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(20627441829760489)
+,p_plug_name=>'Buttons'
+,p_region_css_classes=>'fixed-bottom-right'
+,p_region_template_options=>'#DEFAULT#'
+,p_plug_template=>wwv_flow_api.id(13341550201607031)
+,p_plug_display_sequence=>20
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(7301045758174201)
+,p_button_sequence=>10
+,p_button_plug_id=>wwv_flow_api.id(20627441829760489)
+,p_button_name=>'Home'
+,p_button_action=>'REDIRECT_PAGE'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(13430167445607045)
+,p_button_image_alt=>'Home'
+,p_button_position=>'BELOW_BOX'
+,p_button_redirect_url=>'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:1,2::'
+,p_icon_css_classes=>'fa-home'
 );
 wwv_flow_api.create_page_branch(
  p_id=>wwv_flow_api.id(13470386432808972)
