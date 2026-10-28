@@ -28,14 +28,14 @@ prompt APPLICATION 200 - w4cashWebPos
 -- Application Export:
 --   Application:     200
 --   Name:            w4cashWebPos
---   Date and Time:   07:54 Tuesday October 20, 2026
+--   Date and Time:   11:20 Wednesday October 28, 2026
 --   Exported By:     ADMIN
 --   Flashback:       0
 --   Export Type:     Application Export
 --     Pages:                     10
 --       Items:                   22
 --       Processes:                9
---       Regions:                 16
+--       Regions:                 17
 --       Buttons:                 17
 --       Dynamic Actions:         28
 --     Shared Components:
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'w4cashWebPos'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20261020074148'
+,p_last_upd_yyyymmddhh24miss=>'20261028104830'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>863
 ,p_ui_type_name => null
@@ -13666,7 +13666,42 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_page_is_public_y_n=>'Y'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20261004073610'
+,p_last_upd_yyyymmddhh24miss=>'20261028104830'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(7500745066924301)
+,p_plug_name=>'QR'
+,p_region_template_options=>'#DEFAULT#:margin-top-lg'
+,p_plug_template=>wwv_flow_api.id(13341389843607031)
+,p_plug_display_sequence=>20
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_display_point=>'BODY'
+,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'<div id="qr-container">',
+'  <canvas id="qr"></canvas>',
+'</div>',
+'',
+'<style>',
+'  #qr-container {',
+'    display: flex;',
+'    justify-content: center;',
+'  }',
+'</style>',
+'',
+'<script type="module">',
+'  import QRCode from "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm";',
+'  ',
+'  const url = new URL(window.location.href);',
+'  url.search = "";',
+'',
+'  await QRCode.toCanvas(document.getElementById("qr"), url.href, {',
+'    width: 200,',
+'    margin: 2',
+'  });',
+'</script>'))
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
 );
 wwv_flow_api.create_report_region(
  p_id=>wwv_flow_api.id(13467848363808947)
