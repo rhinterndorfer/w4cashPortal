@@ -28,7 +28,7 @@ prompt APPLICATION 200 - w4cashWebPos
 -- Application Export:
 --   Application:     200
 --   Name:            w4cashWebPos
---   Date and Time:   11:20 Wednesday October 28, 2026
+--   Date and Time:   13:21 Wednesday November 11, 2026
 --   Exported By:     ADMIN
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'w4cashWebPos'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20261028104830'
+,p_last_upd_yyyymmddhh24miss=>'20261111132014'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>863
 ,p_ui_type_name => null
@@ -13097,7 +13097,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#:ui-dialog--stretch'
 ,p_dialog_width=>'95%'
 ,p_last_updated_by=>'ADMIN'
-,p_last_upd_yyyymmddhh24miss=>'20261006092712'
+,p_last_upd_yyyymmddhh24miss=>'20261111132014'
 );
 wwv_flow_api.create_report_region(
  p_id=>wwv_flow_api.id(13472060625808989)
@@ -13119,6 +13119,20 @@ wwv_flow_api.create_report_region(
 '(',
 '    select ',
 '        /*+ RESULT_CACHE */',
+'        ''#'' CARD_TITLE',
+'        , ''w4cash-productselection-category'' CARD_MODIFIERS',
+'        , ''javascript:apex.submit({ request:"NAVCATEGORY", set:{"P300_CATEGORY_ID":"-1","P300_PARENT_CATEGORY_ID":""} });'' CARD_LINK',
+'        , -1 parentsort',
+'        , -1 sortorder',
+'    from dual',
+'    where 1=1',
+'        and NVL(:P300_CATEGORY_ID,''-'') = ''-''',
+'        and exists(select 1 from categories where bgcolor is not null)',
+'    ',
+'    union all',
+'    ',
+'    select ',
+'        /*+ RESULT_CACHE */',
 '        name CARD_TITLE',
 '        , ''w4cash-productselection-category'' CARD_MODIFIERS',
 '        , ''javascript:apex.submit({ request:"NAVCATEGORY", set:{"P300_CATEGORY_ID":"''||id||''","P300_PARENT_CATEGORY_ID":"''||parentid||''"} });'' CARD_LINK',
@@ -13132,19 +13146,25 @@ wwv_flow_api.create_report_region(
 '',
 '    select ',
 '        /*+ RESULT_CACHE */',
-'        name CARD_TITLE',
+'        p.name CARD_TITLE',
 '        , ''w4cash-productselection-product'' CARD_MODIFIERS',
 '        --, ''javascript:apex.submit({ request:"NAVPRODUCT", set:{"P300_PRODUCT_ID":"''||id||''"} });'' CARD_LINK',
 '        --, ''javascript:apex.navigation.dialog.close(true, {"PRODUCT_ID":"''||id||''","PRODUCT_AMOUNT":apex.item("P300_AMOUNT").getValue(),"dialogPageId":300});'' CARD_LINK',
-'        , ''javascript:addProduct("''||id||''","''||name||''")''',
+'        , ''javascript:addProduct("''||p.id||''","''||p.name||''")''',
 '        , 1 parentsort    ',
 '        , catorder sortorder',
 '    from products p',
 '        inner join',
 '            products_cat c',
 '            on p.id = c.product',
+'        inner join',
+'            categories c',
+'            on p.category = c.id',
 '    where 1=1',
-'        and NVL(category,''-'') = NVL(:P300_CATEGORY_ID,''-'')        ',
+'        and (',
+'            NVL(p.category,''-'') = NVL(:P300_CATEGORY_ID,''-'')',
+'            or (NVL(:P300_CATEGORY_ID,''-'') = ''-1'' and c.bgcolor is not null)',
+'        )',
 ')',
 'order by parentsort, sortorder',
 ''))
