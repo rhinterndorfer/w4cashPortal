@@ -20,7 +20,7 @@ as
             BEGIN
                 l_id := to_char(systimestamp, 'yyyymmddhh24missff')||'-'||SYS_GUID();
             
-                select name into l_place_name from places where id = p_place_id;
+                select name into l_place_name from places where id = replace(p_place_id,'-split','');
                 insert into sharedtickets (id, name, content, lockby)
                 values (
                     p_place_id
@@ -197,7 +197,7 @@ as
             where id = p_place_id
                 and lockby = p_lockby;
         else
-            raise_application_error(-20000,'Keine Daten �bermittelt!');
+            raise_application_error(-20000,'Keine Daten übermittelt!');
         end if;
     end;
 
